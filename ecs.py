@@ -105,6 +105,12 @@ class World:
     def get_components(self, *component_types):
         return [query for query in self._get_components(*component_types)]
 
+    def try_component(entity, component_type):
+        if component_type in self._entities[entity]:
+            return self._entities[entity][component_type]
+        else:
+            return  None
+
     def _clear_dead_entities(self):
         for entity in self._dead_entities:
             for component_type in self._entities[entity]:
@@ -117,6 +123,10 @@ class World:
 
         self._dead_entities.clear()
         self.clear_cache()
+
+    def update(self, *args **kwargs):
+        self._clear_dead_entities()
+        self._update(*args,**kwargs)
 
     def _update(self, *args, **kwargs):
         for system in self._systems:
@@ -136,3 +146,5 @@ class World:
         self._components.clear()
         self._entities.clear()
         self.clear_cache()
+
+CachedWorld = World
